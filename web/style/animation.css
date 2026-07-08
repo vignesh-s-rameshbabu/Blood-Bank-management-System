@@ -1,0 +1,53 @@
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleUp {
+    from { opacity: 0; transform: scale(0.95); filter: blur(4px); }
+    to { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+@keyframes pulseAlert {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.5); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(231, 76, 60, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+}
+
+@keyframes slideRight {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes floatContinuous {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(0px); }
+}
+
+/* AI Automation Semantic Animations */
+@keyframes aiPulse {
+    0% { opacity: 0.4; }
+    50% { opacity: 1.0; }
+    100% { opacity: 0.4; }
+}
+
+.ai-pulse-active {
+    animation: aiPulse 2s ease-in-out infinite;
+}
+
+@keyframes successGlow {
+    0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); border-color: rgba(46, 204, 113, 0.6); }
+    50% { box-shadow: 0 0 20px 8px rgba(46, 204, 113, 0.8); border-color: rgba(46, 204, 113, 1); }
+    100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); border-color: transparent; }
+}
+
+.ai-success-glow {
+    animation: successGlow 1.5s ease-out forwards;
+}

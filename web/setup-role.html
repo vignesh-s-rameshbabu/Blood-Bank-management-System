@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Profile | LifeFlow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #070B19 0%, #0B1228 100%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .setup-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+        }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+        .header p { color: #94a3b8; font-size: 0.95rem; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.9rem; color: #94a3b8; margin-bottom: 8px; font-weight: 500; }
+        
+        input, select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        input:focus, select:focus {
+            border-color: #E74C3C;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.25);
+        }
+        select option { background: #070B19; }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #FF5A5F, #C0392B);
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4);
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(231, 76, 60, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-card">
+        <div class="header">
+            <h1>Complete Your Profile</h1>
+            <p>Welcome to LifeFlow! We just need two more details to set up your account.</p>
+        </div>
+        <form action="/api/setup-role" method="POST">
+            <div class="form-group">
+                <label>I am a...</label>
+                <select name="role" required>
+                    <option value="" disabled selected>Select your role</option>
+                    <option value="PATIENT">Patient (Looking for blood)</option>
+                    <option value="DONOR">Donor (Ready to donate)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" name="phone" placeholder="Enter your 10-digit number" required pattern="[0-9]{10}">
+            </div>
+            <button type="submit" class="btn-submit">Continue to Dashboard</button>
+        </form>
+    </div>
+</body>
+</html>

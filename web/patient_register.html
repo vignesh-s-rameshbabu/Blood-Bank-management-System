@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Patient Registration - LifeFlow Blood Bank. Register as a patient to request blood.">
+    <title>Patient Register | LifeFlow Blood Bank</title>
+    <link rel="stylesheet" href="./style/patient_register.css">
+    <link rel="stylesheet" href="./style/animation.css">
+    <style>
+        .urgency-row input[type="radio"]:checked + label.urgency-btn {
+            border-color: #e74c3c;
+            color: #ff6b6b;
+            background: rgba(231, 76, 60, 0.15);
+            opacity: 1;
+        }
+        .urgency-row label.urgency-btn {
+            opacity: 0.6;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .urgency-row label.urgency-btn:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="login-body">
+
+    
+    <header id="navbar">
+        <div class="nav-brand">
+            <span class="brand-icon">&#9829;</span>
+            <div class="brand-text">
+                <h1>LifeFlow</h1>
+                <span class="brand-sub">Blood Bank</span>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="index.html#about" class="nav-link">About</a>
+            <a href="index.html#blood-types" class="nav-link">Blood Types</a>
+            <a href="index.html#contact" class="nav-link">Contact</a>
+        </nav>
+        <div class="nav-actions">
+            <a href="donor_login.html" class="btn-register" id="btn-register-nav" style="display: inline-block; text-align: center;">Donor Login</a>
+        </div>
+    </header>
+
+
+    <div class="login-page">
+
+        
+        <div class="login-left">
+            <div class="login-left-content patient-content">
+                <span class="section-tag">&#9829; Patient Portal</span>
+                <h2 class="login-heading patient-heading">Volunteer Donors</h2>
+                <p class="login-sub patient-sub">Below are some of our active volunteers who are ready to donate. Register your request on the right to match with a donor.</p>
+
+                <div class="info-card patient-info-card">
+                    <h3 class="patient-info-title">Active Volunteer Donors</h3>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Blood Type</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Ramesh Patel</td>
+                                <td><span class="blood-badge">O+</span></td>
+                                <td>Chennai</td>
+                                <td><span class="badge-done">Available</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sarah Khan</td>
+                                <td><span class="blood-badge">A-</span></td>
+                                <td>Delhi</td>
+                                <td><span class="badge-done">Available</span></td>
+                            </tr>
+                            <tr>
+                                <td>David John</td>
+                                <td><span class="blood-badge">B+</span></td>
+                                <td>Mumbai</td>
+                                <td><span class="badge-done">Available</span></td>
+                            </tr>
+                            <tr>
+                                <td>Meera Nair</td>
+                                <td><span class="blood-badge">AB-</span></td>
+                                <td>Bangalore</td>
+                                <td><span class="badge-done">Available</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="patient-btn-container">
+                        <a href="patient_search.html" class="btn-submit btn-check-donors">Check All Volunteer Donors</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="login-right">
+            <div class="login-card register-card">
+                <div class="login-card-header">
+                    <span class="login-icon">&#9829;</span>
+                    <h2>Patient Registration</h2>
+                    <p>Please fill in your details to request blood.</p>
+                </div>
+
+                <form id="patient-form" class="login-form" action="/patient-register" method="GET">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="p-firstname">First Name</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#128100;</span>
+                                <input type="text" id="p-firstname" name="firstname" placeholder="First name" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="p-lastname">Last Name</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#128100;</span>
+                                <input type="text" id="p-lastname" name="lastname" placeholder="Last name" required>
+                            </div>
+                        </div>
+                        <div class="form-group form-full">
+                            <label for="p-email">Email Address</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#9993;</span>
+                                <input type="email" id="p-email" name="email" placeholder="your@email.com" required>
+                            </div>
+                        </div>
+                        <div class="form-group form-full">
+                            <label for="p-phone">Phone Number</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#128222;</span>
+                                <input type="tel" id="p-phone" name="phone" placeholder="10-digit mobile number" pattern="^[0-9]{10}$" title="Must be exactly 10 digits" minlength="10" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                            </div>
+                        </div>
+                        <div class="form-group form-full">
+                            <label for="p-blood">Blood Type Needed</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#9829;</span>
+                                <select id="p-blood" name="blood" class="blood-select" required>
+                                    <option value="" disabled selected>Select blood type</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group form-full">
+                            <label for="p-hospital">Hospital / Location</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#127973;</span>
+                                <input type="text" id="p-hospital" name="hospital" placeholder="Hospital name or address" required minlength="3" maxlength="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="btn-patient-submit">
+                        Submit Request &#9829;
+                    </button>
+                </form>
+
+                <div class="login-divider">
+                    <span>Already registered?</span>
+                </div>
+
+                <div class="login-register-link">
+                    <p>Are you a donor? <a href="donor_login.html" class="link-red">Login here</a> to donate blood.</p>
+                </div>
+
+                <div class="login-back">
+                    <a href="index.html" class="back-link">&#8592; Back to Home</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

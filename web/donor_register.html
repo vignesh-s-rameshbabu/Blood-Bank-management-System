@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Donor Registration - LifeFlow Blood Bank. Register as a donor to save lives.">
+    <title>Donor Register | LifeFlow Blood Bank</title>
+    <link rel="stylesheet" href="./style/donor_login.css">
+    <link rel="stylesheet" href="./style/animation.css">
+    <style>
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 1.2rem;
+        }
+        .form-full {
+            grid-column: 1 / -1;
+        }
+        select.blood-select {
+            width: 100%;
+            padding: 13px 16px 13px 42px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            font-size: 0.93rem;
+            color: white;
+            font-family: Arial, sans-serif;
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        select.blood-select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+        select.blood-select:focus {
+            border-color: rgba(231, 76, 60, 0.6);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .success-banner {
+            display: none;
+            background: rgba(46, 204, 113, 0.15);
+            border: 1px solid #2ecc71;
+            border-radius: 10px;
+            padding: 0.8rem 1.2rem;
+            color: #2ecc71;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .error-banner {
+            display: none;
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid #e74c3c;
+            border-radius: 10px;
+            padding: 0.8rem 1.2rem;
+            color: #ff6b6b;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="login-body">
+
+    
+    <header id="navbar">
+        <div class="nav-brand">
+            <span class="brand-icon">&#9829;</span>
+            <div class="brand-text">
+                <h1>LifeFlow</h1>
+                <span class="brand-sub">Blood Bank</span>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="index.html#about" class="nav-link">About</a>
+            <a href="index.html#blood-types" class="nav-link">Available Blood</a>
+            <a href="index.html#contact" class="nav-link">Contact</a>
+        </nav>
+        <div class="nav-actions">
+            <a href="patient_register.html" class="btn-register" id="btn-register-nav" style="display: inline-block; text-align: center;">Patient Register</a>
+        </div>
+    </header>
+
+    <div class="login-page">
+
+    
+        <div class="login-left">
+            <div class="login-left-content">
+                <span class="hero-badge">&#9829; Donor Portal</span>
+                <h2 class="login-heading">Be a Hero.<br>Save a Life<br>Today.</h2>
+                <p class="login-sub">Join thousands of donors who give the gift of life. Your single donation can save up to 3 lives. Register now and become a lifesaver.</p>
+                <div class="login-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Donors</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">30K+</span>
+                        <span class="stat-label">Lives Saved</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="login-right">
+            <div class="login-card register-card">
+                <div class="login-card-header">
+                    <span class="login-icon">&#9829;</span>
+                    <h2>Donor Registration</h2>
+                    <p>Create your account and start saving lives today.</p>
+                </div>
+
+                <div class="success-banner" id="success-banner">
+                    &#10003; Registration successful! You can now <a href="donor_login.html" class="link-red">login here</a>.
+                </div>
+                <div class="error-banner" id="error-banner">
+                    &#10007; Registration failed. Email may already be in use.
+                </div>
+
+                <form id="donor-register-form" class="login-form" action="/donor-register" method="POST">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="dr-name">Full Name</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#128100;</span>
+                                <input type="text" id="dr-name" name="name" placeholder="Your full name" required minlength="3" maxlength="50" pattern="^[a-zA-Z\s]+$" title="Only letters and spaces">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="dr-phone">Phone Number</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#128222;</span>
+                                <input type="tel" id="dr-phone" name="phone" placeholder="10-digit mobile number" pattern="^[0-9]{10}$" title="Must be exactly 10 digits" minlength="10" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                            </div>
+                        </div>
+                        <div class="form-group form-full">
+                            <label for="dr-email">Email Address</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#9993;</span>
+                                <input type="email" id="dr-email" name="email" placeholder="your@email.com" required>
+                            </div>
+                        </div>
+                        <div class="form-group form-full">
+                            <label for="dr-password">Password</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#128274;</span>
+                                <input type="password" id="dr-password" name="password" placeholder="Create a password" required minlength="8" title="Password must be at least 8 characters">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="dr-blood">Blood Group</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#9829;</span>
+                                <select id="dr-blood" name="blood" class="blood-select" required>
+                                    <option value="" disabled selected>Select blood type</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="dr-age">Age</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#128197;</span>
+                                <input type="number" id="dr-age" name="age" placeholder="Your age" min="18" max="100" required>
+                            </div>
+                        </div>
+                        <div class="form-group form-full">
+                            <label for="dr-city">City</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">&#127961;</span>
+                                <input type="text" id="dr-city" name="city" placeholder="Your city" required minlength="2" maxlength="50">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="btn-donor-register-submit">
+                        Register as Donor &#9829;
+                    </button>
+                </form>
+            
+
+                <div class="login-divider">
+                    <span>Already have an account?</span>
+                </div>
+
+                <div class="login-register-link">
+                    <p>Already a donor? <a href="donor_login.html" class="link-red">Login here</a> to access your dashboard.</p>
+                </div>
+
+                <div class="login-back">
+                    <a href="index.html" class="back-link">&#8592; Back to Home</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('success') === '1') {
+            document.getElementById('success-banner').style.display = 'block';
+            document.getElementById('donor-register-form').style.display = 'none';
+        }
+        if (params.get('error') === 'exists') {
+            document.getElementById('error-banner').textContent = '✗ This email is already registered. Please use a different email or login.';
+            document.getElementById('error-banner').style.display = 'block';
+        }
+        if (params.get('error') === 'missing') {
+            document.getElementById('error-banner').textContent = '✗ Please fill in all required fields.';
+            document.getElementById('error-banner').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

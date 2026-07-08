@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Panel - LifeFlow Blood Bank. Manage donors, patients and blood requests.">
+    <title>Admin Panel | LifeFlow Blood Bank</title>
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/animation.css">
+    <style>
+        
+        .admin-page {
+            background: #0d0d1a;
+            min-height: calc(100vh - 65px);
+            padding: 40px 60px;
+        }
+
+     
+        .admin-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 36px;
+            animation: fadeUp 0.8s ease-out forwards;
+        }
+        .admin-welcome h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+        }
+        .admin-welcome p {
+            font-size: 0.92rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+       
+        .admin-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 28px;
+            animation: fadeUp 0.8s ease-out forwards;
+        }
+        .tab-btn {
+            padding: 11px 28px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 40px;
+            background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.55);
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        .tab-btn:hover {
+            border-color: rgba(231,76,60,0.5);
+            color: white;
+        }
+
+ 
+        .panel { display: none !important; }
+
+       
+        #tab-donors:checked ~ .admin-page #panel-donors,
+        #tab-patients:checked ~ .admin-page #panel-patients,
+        #tab-requests:checked ~ .admin-page #panel-requests {
+            display: block !important;
+        }
+
+        #tab-donors:checked ~ .admin-page #tab-btn-donors,
+        #tab-patients:checked ~ .admin-page #tab-btn-patients,
+        #tab-requests:checked ~ .admin-page #tab-btn-requests {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 6px 20px rgba(192,57,43,0.4);
+        }
+
+       
+        .dash-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 28px 28px;
+            margin-bottom: 24px;
+            animation: fadeUp 0.8s ease-out forwards;
+        }
+        .dash-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 6px;
+        }
+        .card-sub {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 20px;
+        }
+
+       
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: border 0.2s;
+        }
+        .input-wrapper:focus-within {
+            border-color: rgba(231,76,60,0.6);
+        }
+        .input-wrapper input,
+        .input-wrapper select {
+            width: 100%;
+            padding: 11px 14px;
+            background: transparent;
+            border: none;
+            color: #e0e0e0;
+            font-size: 0.88rem;
+            font-family: inherit;
+            outline: none;
+        }
+        .input-wrapper input::placeholder { color: rgba(255,255,255,0.3); }
+        .input-wrapper select option { background: #1a1a2e; }
+
+        .btn-submit-sm {
+            padding: 11px 26px;
+            border: none;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(192,57,43,0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+        }
+        .btn-submit-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(192,57,43,0.5);
+        }
+        .btn-refresh {
+            padding: 10px 20px;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 22px;
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        .btn-refresh:hover { background: rgba(255,255,255,0.12); color: white; }
+
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .history-table th {
+            text-align: left;
+            padding: 11px 14px;
+            color: rgba(255,255,255,0.5);
+            font-weight: 600;
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .history-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.85);
+        }
+        .history-table tr:last-child td { border-bottom: none; }
+        .history-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+
+        .blood-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, rgba(231,76,60,0.2), rgba(192,57,43,0.1));
+            border: 1px solid rgba(231,76,60,0.35);
+            color: #ff6b6b;
+        }
+        .badge-active   { background: rgba(46,204,113,0.12);  border: 1px solid rgba(46,204,113,0.3);  color: #2ecc71; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+        .badge-inactive { background: rgba(231,76,60,0.12);   border: 1px solid rgba(231,76,60,0.3);   color: #e74c3c; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+        .badge-pending  { background: rgba(241,196,15,0.12);  border: 1px solid rgba(241,196,15,0.3);  color: #f1c40f; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+        .badge-critical { background: rgba(231,76,60,0.18);   border: 1px solid rgba(231,76,60,0.4);   color: #ff6b6b; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+        .badge-urgent   { background: rgba(241,196,15,0.15);  border: 1px solid rgba(241,196,15,0.35); color: #f1c40f; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+        .badge-accepted { background: rgba(46,204,113,0.12);  border: 1px solid rgba(46,204,113,0.3);  color: #2ecc71; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+
+
+        .btn-del {
+            padding: 5px 14px;
+            border: 1px solid rgba(231,76,60,0.35);
+            border-radius: 6px;
+            background: rgba(231,76,60,0.06);
+            color: #ff6b6b;
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+        .btn-del:hover { background: #e74c3c; color: white; border-color: transparent; }
+
+        
+        tr:has(.delete-row-checkbox:checked) {
+            display: none !important;
+        }
+
+       
+        .form-msg {
+            display: none;
+            margin-top: 14px;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+        #add-donor-toggle:checked ~ .admin-page #d-msg { display: block; }
+        #add-patient-toggle:checked ~ .admin-page #p-msg { display: block; }
+        #send-request-toggle:checked ~ .admin-page #r-msg { display: block; }
+    </style>
+</head>
+<body class="login-body">
+
+ 
+    <input type="checkbox" id="add-donor-toggle" style="display:none;">
+    <input type="checkbox" id="add-patient-toggle" style="display:none;">
+    <input type="checkbox" id="send-request-toggle" style="display:none;">
+    <input type="radio" name="admin-tabs" id="tab-donors" checked style="display:none;">
+    <input type="radio" name="admin-tabs" id="tab-patients" style="display:none;">
+    <input type="radio" name="admin-tabs" id="tab-requests" style="display:none;">
+
+   
+    <header id="navbar">
+        <div class="nav-brand">
+            <span class="brand-icon">&#9829;</span>
+            <div class="brand-text">
+                <h1>LifeFlow</h1>
+                <span class="brand-sub">Blood Bank</span>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="index.html#about" class="nav-link">About</a>
+            <a href="index.html#blood-types" class="nav-link">Blood Types</a>
+            <a href="index.html#contact" class="nav-link">Contact</a>
+        </nav>
+        <div class="nav-actions">
+            <a href="index.html" class="btn-login" id="btn-logout" style="display: inline-block; text-align: center;">Logout</a>
+        </div>
+    </header>
+
+    
+    <div class="admin-page">
+        
+       
+        <div class="admin-header">
+            <div class="admin-welcome">
+                <h2>Admin Control Panel</h2>
+                <p>Manage blood bank systems, view real-time logs, and monitor donors/patients.</p>
+            </div>
+            <a href="admin.html" class="btn-submit-sm" style="display: inline-block; text-align: center; text-decoration: none; line-height: 1.15; padding: 11px 26px;">&#8635; Refresh All</a>
+        </div>
+
+       
+        <div class="admin-tabs">
+            <label for="tab-donors" class="tab-btn" id="tab-btn-donors">&#128100; Donors</label>
+            <label for="tab-patients" class="tab-btn" id="tab-btn-patients">&#128203; Patient Requests</label>
+            <label for="tab-requests" class="tab-btn" id="tab-btn-requests">&#128276; Blood Requests</label>
+        </div>
+
+        
+        <div id="panel-donors" class="panel">
+
+       
+            <div class="dash-card">
+                <h3>&#10133; Add New Donor</h3>
+                <p class="card-sub">Fill in the form to insert a new donor into the database.</p>
+                <div class="form-grid">
+                    <div class="input-wrapper"><input id="d-name"     type="text"     placeholder="Full Name" /></div>
+                    <div class="input-wrapper"><input id="d-email"    type="email"    placeholder="Email Address" /></div>
+                    <div class="input-wrapper"><input id="d-phone"    type="tel"      placeholder="Phone Number" /></div>
+                    <div class="input-wrapper"><input id="d-password" type="password" placeholder="Password" /></div>
+                    <div class="input-wrapper">
+                        <select id="d-blood">
+                            <option value="">Select Blood Type</option>
+                            <option>A+</option><option>A-</option>
+                            <option>B+</option><option>B-</option>
+                            <option>O+</option><option>O-</option>
+                            <option>AB+</option><option>AB-</option>
+                        </select>
+                    </div>
+                    <div class="input-wrapper"><input id="d-age"      type="number" placeholder="Age" /></div>
+                    <div class="input-wrapper"><input id="d-location" type="text"   placeholder="City, Country" /></div>
+                </div>
+                <label for="add-donor-toggle" class="btn-submit-sm" style="display: inline-block; cursor: pointer; text-align: center;">Add Donor &#9829;</label>
+                <div class="form-msg" id="d-msg" style="color:#2ecc71;">✅ Donor added successfully (simulated).</div>
+            </div>
+
+          
+            <div class="dash-card">
+                <div class="section-row">
+                    <h4>&#128275; All Donors (SELECT)</h4>
+                    <a href="admin.html" style="text-decoration: none;"><button class="btn-refresh">&#8635; Refresh</button></a>
+                </div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Name</th><th>Email</th>
+                            <th>Blood Type</th><th>Age</th><th>Location</th>
+                            <th>Status</th><th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="donors-tbody">
+                        <tr>
+                            <td>1</td><td>Arjun Mehta</td><td>arjun@email.com</td>
+                            <td><span class="blood-badge">O+</span></td><td>27</td><td>Chennai, India</td>
+                            <td><span class="badge-active">Active</span></td>
+                            <td><a href="/delete-user?userId=1" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
+                        </tr>
+                        <tr>
+                            <td>2</td><td>Priya Nair</td><td>priya@email.com</td>
+                            <td><span class="blood-badge">A+</span></td><td>24</td><td>Bangalore, India</td>
+                            <td><span class="badge-active">Active</span></td>
+                            <td><a href="/delete-user?userId=2" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
+                        </tr>
+                        <tr>
+                            <td>3</td><td>Rohit Sharma</td><td>rohit@email.com</td>
+                            <td><span class="blood-badge">B+</span></td><td>30</td><td>Mumbai, India</td>
+                            <td><span class="badge-active">Active</span></td>
+                            <td><a href="/delete-user?userId=3" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
+                        </tr>
+                        <tr>
+                            <td>4</td><td>Vikram Das</td><td>vikram@email.com</td>
+                            <td><span class="blood-badge">AB+</span></td><td>35</td><td>Hyderabad, India</td>
+                            <td><span class="badge-active">Active</span></td>
+                            <td><a href="/delete-user?userId=4" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
+                        </tr>
+                        <tr>
+                            <td>5</td><td>Anjali Roy</td><td>anjali@email.com</td>
+                            <td><span class="blood-badge">O-</span></td><td>29</td><td>Chennai, India</td>
+                            <td><span class="badge-active">Active</span></td>
+                            <td><a href="/delete-user?userId=5" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        
+        <div id="panel-patients" class="panel">
+
+           
+            <div class="dash-card">
+                <h3>&#10133; Submit Blood Request</h3>
+                <p class="card-sub">Add a new patient blood request to the database.</p>
+                <div class="form-grid">
+                    <div class="input-wrapper"><input id="p-name"     type="text"  placeholder="Patient Full Name" /></div>
+                    <div class="input-wrapper"><input id="p-email"    type="email" placeholder="Email Address" /></div>
+                    <div class="input-wrapper"><input id="p-phone"    type="tel"   placeholder="Phone Number" /></div>
+                    <div class="input-wrapper">
+                        <select id="p-blood">
+                            <option value="">Blood Type Needed</option>
+                            <option>A+</option><option>A-</option>
+                            ``<option>B+</option><option>B-</option>
+                            <option>O+</option><option>O-</option>
+                            <option>AB+</option><option>AB-</option>
+                        </select>
+                    </div>
+                    <div class="input-wrapper"><input id="p-hospital" type="text" placeholder="Hospital / Location" /></div>
+                </div>
+                <label for="add-patient-toggle" class="btn-submit-sm" style="display: inline-block; cursor: pointer; text-align: center;">Submit Request &#9829;</label>
+                <div class="form-msg" id="p-msg" style="color:#2ecc71;">✅ Patient Request submitted successfully (simulated).</div>
+            </div>
+
+            
+            <div class="dash-card">
+                <div class="section-row">
+                    <h4>&#128275; All Patient Requests (SELECT)</h4>
+                    <a href="admin.html" style="text-decoration: none;"><button class="btn-refresh">&#8635; Refresh</button></a>
+                </div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Name</th><th>Email</th>
+                            <th>Blood Needed</th><th>Hospital</th><th>Phone</th><th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patients-tbody">
+                        <tr>
+                            <td>1</td><td>Rajesh Kumar</td><td>rajesh@email.com</td>
+                            <td><span class="blood-badge">O+</span></td><td>Apollo Hospital</td><td>+91 94444 88888</td>
+                            <td><a href="/delete-user?userId=1" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
+                        </tr>
+                        <tr>
+                            <td>2</td><td>Sita Devi</td><td>sita@email.com</td>
+                            <td><span class="blood-badge">A+</span></td><td>City General Hospital</td><td>+91 93333 77777</td>
+                            <td><a href="/delete-user?userId=2" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
+                        </tr>
+                        <tr>
+                            <td>3</td><td>Amit Sharma</td><td>amit@email.com</td>
+                            <td><span class="blood-badge">O+</span></td><td>Fortis Hospital</td><td>+91 44444 55555</td>
+                            <td><a href="/delete-user?userId=3" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        
+        <div id="panel-requests" class="panel">
+
+        
+            <div class="dash-card">
+                <h3>&#10133; Send Request to Donor</h3>
+                <p class="card-sub">Link a patient to a specific donor by entering their IDs.</p>
+                <div class="form-grid">
+                    <div class="input-wrapper"><input id="r-pid"      type="number" placeholder="Patient ID" /></div>
+                    <div class="input-wrapper"><input id="r-did"      type="number" placeholder="Donor ID" /></div>
+                    <div class="input-wrapper">
+                        <select id="r-blood">
+                            <option value="">Blood Type</option>
+                            <option>A+</option><option>A-</option>
+                            <option>B+</option><option>B-</option>
+                            <option>O+</option><option>O-</option>
+                            <option>AB+</option><option>AB-</option>
+                        </select>
+                    </div>
+                    <div class="input-wrapper"><input id="r-hospital" type="text" placeholder="Hospital" /></div>
+                </div>
+                <label for="send-request-toggle" class="btn-submit-sm" style="display: inline-block; cursor: pointer; text-align: center;">Send Request &#9829;</label>
+                <div class="form-msg" id="r-msg" style="color:#2ecc71;">✅ Blood Request linked successfully (simulated).</div>
+            </div>
+
+           
+            <div class="dash-card">
+                <div class="section-row">
+                    <h4>&#128275; All Blood Requests (SELECT)</h4>
+                    <a href="admin.html" style="text-decoration: none;"><button class="btn-refresh">&#8635; Refresh</button></a>
+                </div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Patient</th><th>Blood Needed</th>
+                            <th>Hospital</th><th>Units</th><th>Status</th><th>Created At</th><th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requests-tbody">
+                        <tr>
+                            <td>1</td><td>Rajesh Kumar</td><td><span class="blood-badge">O+</span></td>
+                            <td>Apollo Hospital</td><td>1 Unit</td><td><span class="badge-pending">Pending</span></td><td>2026-06-29 23:51:04.0</td>
+                            <td><a href="/delete-request?requestId=1" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
+                        </tr>
+                        <tr>
+                            <td>2</td><td>Sita Devi</td><td><span class="blood-badge">A+</span></td>
+                            <td>City General Hospital</td><td>1 Unit</td><td><span class="badge-pending">Pending</span></td><td>2026-06-29 23:34:32.0</td>
+                            <td><a href="/delete-request?requestId=2" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
+                        </tr>
+                        <tr>
+                            <td>3</td><td>Amit Sharma</td><td><span class="blood-badge">O+</span></td>
+                            <td>Fortis Hospital</td><td>1 Unit</td><td><span class="badge-accepted">Accepted</span></td><td>2026-06-29 23:33:00.0</td>
+                            <td><a href="/delete-request?requestId=3" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

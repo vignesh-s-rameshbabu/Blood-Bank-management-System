@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Donation History - LifeFlow Blood Bank.">
+    <title>Donation History | LifeFlow Blood Bank</title>
+    <link rel="stylesheet" href="./style/donor_history.css">
+    <link rel="stylesheet" href="./style/animation.css">
+</head>
+<body class="login-body">
+
+
+    <header id="navbar">
+        <div class="nav-brand">
+            <span class="brand-icon">&#9829;</span>
+            <div class="brand-text">
+                <h1>LifeFlow</h1>
+                <span class="brand-sub">Blood Bank</span>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="index.html#about" class="nav-link">About</a>
+            <a href="index.html#blood-types" class="nav-link">Blood Types</a>
+            <a href="index.html#contact" class="nav-link">Contact</a>
+        </nav>
+        <div class="nav-actions">
+            <a href="index.html" class="btn-login" id="btn-logout" style="display: inline-block; text-align: center;">Logout</a>
+        </div>
+    </header>
+
+
+    <div class="history-page">
+        <div class="history-container">
+            <div class="history-header">
+                <h2>Donation History</h2>
+                <a href="donor_dashboard.html" class="back-dash-btn">&larr; Back to Dashboard</a>
+            </div>
+
+            <div class="dash-card">
+                <h3>&#128203; Past Donations</h3>
+                
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Blood Type</th>
+                            <th>Units</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-data">
+                        <tr>
+                            <td>12-Jun-2026</td>
+                            <td><span class="blood-badge" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">O+</span></td>
+                            <td>1 Unit</td>
+                            <td><span class="badge-done" style="background: rgba(39, 174, 96, 0.15); color: #2ecc71; border: 1px solid rgba(39, 174, 96, 0.3); padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>04-Mar-2026</td>
+                            <td><span class="blood-badge" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">O+</span></td>
+                            <td>1 Unit</td>
+                            <td><span class="badge-done" style="background: rgba(39, 174, 96, 0.15); color: #2ecc71; border: 1px solid rgba(39, 174, 96, 0.3); padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">Completed</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

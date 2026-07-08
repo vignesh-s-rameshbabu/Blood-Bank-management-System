@@ -1,0 +1,327 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #0d0d1a;
+    color: #1a1a2e;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+.login-body {
+    background: #0d0d1a;
+    min-height: 100vh;
+}
+
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(192, 57, 43, 0.12);
+    padding: 14px 48px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-icon {
+    font-size: 2rem;
+    color: #c0392b;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(192, 57, 43, 0.3));
+}
+
+.brand-text h1 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #c0392b;
+    line-height: 1.1;
+}
+
+.brand-sub {
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: #888;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.nav-links {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.nav-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #444;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+    background: rgba(192, 57, 43, 0.08);
+    color: #c0392b;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-login,
+.btn-register {
+    padding: 9px 22px;
+    border: none;
+    border-radius: 22px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: Arial, sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-register {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    box-shadow: 0 4px 14px rgba(192, 57, 43, 0.35);
+}
+
+.btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(192, 57, 43, 0.45);
+}
+
+.btn-login a,
+.btn-register a {
+    color: inherit;
+}
+
+
+
+.search-page {
+    background: #0d0d1a;
+    min-height: calc(100vh - 65px);
+    padding: 40px 60px;
+}
+
+.search-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.search-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 20px;
+}
+
+.search-title h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 6px;
+}
+
+.search-title p {
+    font-size: 0.92rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+
+.search-filters {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.filter-select {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 0.88rem;
+    color: white;
+    outline: none;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.filter-select:focus {
+    border-color: rgba(231, 76, 60, 0.6);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.filter-select option {
+    background: #1a1a2e;
+    color: white;
+}
+
+
+.donor-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 10px;
+}
+
+.donor-search-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    animation: fadeUp 0.8s ease-out forwards;
+}
+
+.donor-search-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+    border-color: rgba(231, 76, 60, 0.35);
+}
+
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-donor-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: white;
+}
+
+
+.blood-badge {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.badge-done {
+    background: rgba(39, 174, 96, 0.15);
+    color: #2ecc71;
+    border: 1px solid rgba(39, 174, 96, 0.3);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+
+.card-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.card-detail-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+}
+
+.card-detail-item span:first-child {
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 500;
+}
+
+.card-detail-item span:last-child {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+}
+
+
+.card-contact-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1.5px solid rgba(231, 76, 60, 0.5);
+    border-radius: 12px;
+    color: #ff6b6b;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    display: block;
+    outline: none;
+}
+
+.card-contact-btn:hover {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 14px rgba(192, 57, 43, 0.35);
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.no-results-icon {
+    font-size: 3rem;
+    color: #c0392b;
+    margin-bottom: 16px;
+}

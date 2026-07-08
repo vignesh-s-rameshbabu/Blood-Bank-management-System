@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Donor Login - LifeFlow Blood Bank. Login to donate blood and save lives.">
+    <title>Donor Login | LifeFlow Blood Bank</title>
+    <link rel="stylesheet" href="./style/donor_login.css">
+    <link rel="stylesheet" href="./style/animation.css">
+</head>
+<body class="login-body">
+
+    
+    <header id="navbar">
+        <div class="nav-brand">
+            <span class="brand-icon">&#9829;</span>
+            <div class="brand-text">
+                <h1>LifeFlow</h1>
+                <span class="brand-sub">Blood Bank</span>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="index.html#about" class="nav-link">About</a>
+            <a href="index.html#blood-types" class="nav-link">Available Blood</a>
+            <a href="index.html#contact" class="nav-link">Contact</a>
+        </nav>
+        <div class="nav-actions">
+            <a href="patient_register.html" class="btn-register" id="btn-register-nav" style="display: inline-block; text-align: center;">Patient Register</a>
+        </div>
+    </header>
+
+
+    <div class="login-page">
+
+      
+        <div class="login-left">
+            <div class="login-left-content">
+                <span class="hero-badge">&#9829; Donor Portal</span>
+                <h2 class="login-heading">Every Drop<br>You Give<br>Saves a Life</h2>
+                <p class="login-sub">Login to your donor account and schedule your next blood donation. Together we can make a difference.</p>
+                <div class="login-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Donors</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">30K+</span>
+                        <span class="stat-label">Lives Saved</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       
+        <div class="login-right">
+            <div class="login-card">
+                <div class="login-card-header">
+                    <span class="login-icon">&#9829;</span>
+                    <h2>Donor Login</h2>
+                    <p>Welcome back! Please login to continue donating.</p>
+                </div>
+
+                <form id="login-form" class="login-form" action="/donor-login" method="POST">
+                    <div class="form-group">
+                        <label for="donor-email">Email Address</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">&#9993;</span>
+                            <input type="email" id="donor-email" name="email" placeholder="your@email.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="donor-password">Password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">&#128274;</span>
+                            <input type="password" id="donor-password" name="password" placeholder="Enter your password" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div style="flex: 1;"></div>
+                        <a href="#" class="forgot-link">Forgot Password?</a>
+                    </div>
+
+                     <button type="submit" class="btn-submit" id="btn-login-submit">
+                        Login to Donate &#9829;
+                    </button>
+                </form>
+
+                <div class="login-divider">
+                    <span>Don't have an account?</span>
+                </div>
+
+                <div class="login-register-link">
+                    <p>New donor? <a href="donor_register.html" class="link-red">Register here</a> and start saving lives today.</p>
+                </div>
+
+                <div class="login-back">
+                    <a href="index.html" class="back-link">&#8592; Back to Home</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+     
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('error') === 'invalid') {
+            const banner = document.createElement('div');
+            banner.style.cssText = 'background:rgba(231,76,60,0.15);border:1px solid #e74c3c;border-radius:10px;padding:0.8rem 1.2rem;color:#ff6b6b;font-size:0.95rem;margin-bottom:1rem;text-align:center;';
+            banner.textContent = 'Invalid email or password. Please try again.';
+            const form = document.getElementById('login-form');
+            form.parentNode.insertBefore(banner, form);
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Donor Dashboard - LifeFlow Blood Bank. Manage your blood donations.">
+    <title>Donor Dashboard | LifeFlow Blood Bank</title>
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/donor_dashboard.css">
+    <link rel="stylesheet" href="./style/animation.css">
+    <style>
+        @keyframes amberGlow {
+            0% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.4); border-color: rgba(243, 156, 18, 0.6); }
+            50% { box-shadow: 0 0 15px 5px rgba(243, 156, 18, 0.6); border-color: rgba(243, 156, 18, 1); }
+            100% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.4); border-color: rgba(243, 156, 18, 0.6); }
+        }
+        
+        #ai-priority-module {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-bottom: 25px; 
+            transition: all 0.3s ease;
+        }
+        
+        #ai-priority-module.ai-alert-active {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.1), rgba(230, 126, 34, 0.1));
+            animation: amberGlow 2s infinite;
+        }
+       
+        .accept-checkbox:checked + label.accept-btn {
+            background: transparent !important;
+            border: none !important;
+            color: #2ecc71 !important;
+            box-shadow: none !important;
+            pointer-events: none;
+        }
+        .accept-checkbox:checked + label.accept-btn .unaccepted {
+            display: none;
+        }
+        .accept-checkbox:checked + label.accept-btn::before {
+            content: " Accepted";
+        }
+
+        
+        .profile-success-msg {
+            display: none;
+            color: #2ecc71;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            text-align: center;
+        }
+        #profile-save-toggle:checked ~ .profile-success-msg {
+            display: block;
+        }
+
+        
+        .contact-toast-wrapper {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            border-radius: 14px;
+            padding: 18px 24px;
+            color: white;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
+        .toast-toggle:checked ~ .contact-toast-wrapper {
+            display: block;
+            animation: fadeUp 0.4s ease-out;
+        }
+        .toast-close-btn {
+            display: block;
+            margin-top: 10px;
+            padding: 6px 16px;
+            background: #e74c3c;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.82rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="login-body">
+
+   
+    <input type="checkbox" id="contact-toggle-amit" class="toast-toggle" style="display:none;">
+
+
+    <header id="navbar">
+        <div class="nav-brand">
+            <span class="brand-icon">&#9829;</span>
+            <div class="brand-text">
+                <h1>LifeFlow</h1>
+                <span class="brand-sub">Blood Bank</span>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="index.html#about" class="nav-link">About</a>
+            <a href="index.html#blood-types" class="nav-link">Blood Types</a>
+            <a href="index.html#contact" class="nav-link">Contact</a>
+        </nav>
+        <div class="nav-actions">
+            <a href="index.html" class="btn-login" id="btn-logout" style="display: inline-block; text-align: center;">Logout</a>
+        </div>
+    </header>
+
+   
+    <div class="dashboard-page">
+
+        <!-- AI Priority Broadcast Module -->
+        <div id="ai-priority-module">
+            <!-- Passive State -->
+            <div id="ai-passive-state" style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 1.5rem; color: #2ecc71;">&#10004;</span>
+                    <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 1.05rem;"><strong>AI Agent Status: Active</strong> | Monitoring system logs for compatibility requests.</p>
+                </div>
+            </div>
+            
+            <!-- Active State -->
+            <div id="ai-active-state" style="display: none; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 2.2rem; color: #f39c12; animation: bounce 1s infinite alternate;">&#9888;</span>
+                    <div>
+                        <h3 style="color: #f1c40f; margin: 0 0 5px 0; font-size: 1.25rem; font-weight: 700;">CRITICAL COMPATIBILITY DETECTED: A patient requires <span id="detected-blood-type">O+</span>.</h3>
+                        <p style="color: rgba(255,255,255,0.95); margin: 0; font-size: 0.95rem; line-height: 1.4;">An automated confirmation link and match profile log has been routed to your external email account. Please check your inbox immediately to confirm availability.</p>
+                    </div>
+                </div>
+                <button onclick="dismissAIPriority()" style="background: rgba(243, 156, 18, 0.2); border: 1px solid rgba(243, 156, 18, 0.5); color: #f1c40f; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; margin-left: 20px;">Dismiss</button>
+            </div>
+        </div>
+        
+        <div class="dash-header">
+            <div class="dash-welcome">
+                <h2>Welcome back, Arjun Mehta &#9829;</h2>
+                <p>Thank you for being a life saver. Here is your donation overview.</p>
+            </div>
+            <a href="donor_history.html" class="dash-donate-btn" style="display: inline-block; text-align: center; line-height: 1.15; padding: 13px 28px;">View History</a>
+        </div>
+
+        <div class="dash-stats">
+            <div class="dash-stat-card">
+                <div class="dash-stat-icon">&#9829;</div>
+                <div class="dash-stat-info">
+                    <h3>2</h3>
+                    <p>Total Donations</p>
+                </div>
+            </div>
+            <div class="dash-stat-card">
+                <div class="dash-stat-icon">&#128101;</div>
+                <div class="dash-stat-info">
+                    <h3>6</h3>
+                    <p>Lives Impacted</p>
+                </div>
+            </div>
+        </div>
+
+      
+        <div class="dash-grid">
+
+           
+            <div class="dash-grid-left" style="display: flex; flex-direction: column; gap: 24px;">
+                
+               
+                <div class="dash-card">
+                    <h3>&#128276; New Blood Requests</h3>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 16px;">Requests sent directly to you by Finders.</p>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Blood Type</th>
+                                <th>Location</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-requests-tbody">
+                            <tr>
+                                <td>Rajesh Kumar</td>
+                                <td><span class="blood-badge">O+</span></td>
+                                <td>Apollo Hospital</td>
+                                <td>
+                                    <input type="checkbox" id="accept-req-1" class="accept-checkbox" style="display:none;">
+                                    <label for="accept-req-1" class="dash-donate-btn btn-donate-small accept-btn"><span class="unaccepted">Accept</span></label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sita Devi</td>
+                                <td><span class="blood-badge">A+</span></td>
+                                <td>City General Hospital</td>
+                                <td>
+                                    <input type="checkbox" id="accept-req-2" class="accept-checkbox" style="display:none;">
+                                    <label for="accept-req-2" class="dash-donate-btn btn-donate-small accept-btn"><span class="unaccepted">Accept</span></label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+             
+                <div class="dash-card">
+                    <h3>&#9989; Accepted Requests</h3>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 16px;">Requests you have committed to donate for.</p>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Blood Type</th>
+                                <th>Hospital</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accepted-requests-tbody">
+                            <tr>
+                                <td>Amit Sharma</td>
+                                <td><span class="blood-badge">O+</span></td>
+                                <td>Fortis Hospital</td>
+                                <td>+91 94444 88888</td>
+                                <td>amit@example.com</td>
+                                <td><span class="badge-done badge-normal" style="background: rgba(39, 174, 96, 0.15); color: #2ecc71; border: 1px solid rgba(39, 174, 96, 0.3); padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">In Progress</span></td>
+                                <td>
+                                    <button class="dash-donate-btn btn-donate-small" style="background:linear-gradient(135deg,#27ae60,#2ecc71);box-shadow:0 6px 20px rgba(39,174,96,0.4); border:none;">Complete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            
+            <div class="dash-card">
+                <h3>&#128100; Donor Info</h3>
+                <div class="profile-avatar">&#9829;</div>
+                <p class="profile-name profile-name-text" id="display-name">Arjun Mehta</p>
+                <p class="profile-sub profile-sub-text">Active Donor Since 2025</p>
+                
+                <!-- View Mode Section -->
+                <div id="profile-view-sec">
+                    <div class="profile-fields">
+                        <div class="profile-field">
+                            <span>Full Name</span>
+                            <span id="display-name-val">Arjun Mehta</span>
+                        </div>
+                        <div class="profile-field">
+                            <span>Blood Type</span>
+                            <span><span id="display-blood-val" class="blood-badge">O+</span></span>
+                        </div>
+                        <div class="profile-field">
+                            <span>Age</span>
+                            <span id="display-age-val">27</span>
+                        </div>
+                        <div class="profile-field">
+                            <span>Phone</span>
+                            <span id="display-phone-val">+91 98765 43210</span>
+                        </div>
+                        <div class="profile-field">
+                            <span>Location</span>
+                            <span id="display-location-val">Chennai, India</span>
+                        </div>
+                        <div class="profile-field">
+                            <span>Status</span>
+                            <span id="display-status-val" class="status-active">Active</span>
+                        </div>
+                    </div>
+                    <button id="btn-edit-profile" class="logout-btn" style="border-color: #3498db; color: #3498db; margin-top: 20px; width: 100%; text-align: center; cursor: pointer; display: block;">Edit Profile</button>
+                </div>
+
+                <!-- Edit Mode Section (Hidden by default) -->
+                <form id="donor-info-form" style="display: none; margin-top: 0;">
+                    <div class="profile-fields">
+                        <div class="profile-field">
+                            <span>Full Name</span>
+                            <input type="text" id="donor-name-input" placeholder="Donor Name" value="Arjun Mehta" required>
+                        </div>
+                        <div class="profile-field">
+                            <span>Blood Type</span>
+                            <select id="donor-blood-input" required>
+                                <option value="O+" selected>O+</option>
+                                <option value="O-">O-</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                            </select>
+                        </div>
+                        <div class="profile-field">
+                            <span>Age</span>
+                            <input type="number" id="donor-age-input" placeholder="27" value="27" required>
+                        </div>
+                        <div class="profile-field">
+                            <span>Phone</span>
+                            <input type="tel" id="donor-phone-input" placeholder="+91 98765 43210" value="+91 98765 43210" required>
+                        </div>
+                        <div class="profile-field">
+                            <span>Location</span>
+                            <input type="text" id="donor-location-input" placeholder="Chennai, India" value="Chennai, India" required>
+                        </div>
+                        <div class="profile-field">
+                            <span>Status</span>
+                            <select id="donor-status-input" required>
+                                <option value="Active" selected>Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="logout-btn btn-save-donor" style="flex: 1; text-align: center; cursor: pointer; margin-top: 0;">Save Info</button>
+                        <button type="button" id="btn-cancel-edit" class="logout-btn" style="flex: 1; border-color: #e74c3c; color: #ff6b6b; text-align: center; cursor: pointer; margin-top: 0;">Cancel</button>
+                    </div>
+                    <p class="profile-success-msg" id="profile-success-msg"> Profile saved successfully!</p>
+                    <p class="profile-error-msg" id="profile-error-msg" style="display:none; color: #ff6b6b; font-size: 0.85rem; margin-top: 10px; text-align: center;">Failed to save profile. Please try again.</p>
+                </form>
+                <a href="index.html" class="logout-btn" id="btn-logout-profile" style="display: block; text-align: center; line-height: 1.15; padding: 13px 28px;">&#8592; Logout</a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="contact-toast-wrapper" id="toast-amit">
+        <strong style="color:#e74c3c;">&#9829; Contact Patient</strong><br>
+        <span style="color:rgba(255,255,255,0.7);">Name:</span> Amit Sharma<br>
+        <span style="color:rgba(255,255,255,0.7);">Phone:</span> +91 44444 55555
+        <label for="contact-toggle-amit" class="toast-close-btn">Close</label>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+
+        const viewSec = document.getElementById('profile-view-sec');
+        const editForm = document.getElementById('donor-info-form');
+
+        // Toggle Edit Mode
+        document.getElementById('btn-edit-profile').addEventListener('click', function() {
+            viewSec.style.display = 'none';
+            editForm.style.display = 'block';
+        });
+
+        // Demo simulation: Trigger AI Priority Broadcast Module after 3 seconds if not in edit mode
+        setTimeout(() => {
+            const module = document.getElementById('ai-priority-module');
+            if(module) {
+                document.getElementById('ai-passive-state').style.display = 'none';
+                document.getElementById('ai-active-state').style.display = 'flex';
+                module.classList.add('ai-alert-active');
+            }
+        }, 3000);
+
+        function dismissAIPriority() {
+            const module = document.getElementById('ai-priority-module');
+            if(module) {
+                document.getElementById('ai-active-state').style.display = 'none';
+                document.getElementById('ai-passive-state').style.display = 'flex';
+                module.classList.remove('ai-alert-active');
+            }
+        }
+
+        // Cancel Edit Mode
+        document.getElementById('btn-cancel-edit').addEventListener('click', function() {
+            editForm.style.display = 'none';
+            viewSec.style.display = 'block';
+            document.getElementById('profile-error-msg').style.display = 'none';
+            document.getElementById('profile-success-msg').style.display = 'none';
+        });
+
+        editForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('donor-name-input').value;
+            const blood = document.getElementById('donor-blood-input').value;
+            const age = document.getElementById('donor-age-input').value;
+            const phone = document.getElementById('donor-phone-input').value;
+            const city = document.getElementById('donor-location-input').value;
+            const status = document.getElementById('donor-status-input').value;
+
+            const params = new URLSearchParams({
+                email: email,
+                name: name,
+                blood: blood,
+                age: age,
+                phone: phone,
+                city: city,
+                status: status
+            });
+
+            fetch('/update-donor?' + params.toString())
+                .then(response => response.text())
+                .then(data => {
+                    if (data === 'SUCCESS') {
+                        // Update display name at the top
+                        document.getElementById('display-name').textContent = name;
+                        
+                        const welcomeH2 = document.querySelector('.dash-welcome h2');
+                        if (welcomeH2) {
+                            welcomeH2.innerHTML = 'Welcome back, ' + name + ' &#9829;';
+                        }
+
+                        // Update view mode static text fields
+                        document.getElementById('display-name-val').textContent = name;
+                        document.getElementById('display-blood-val').textContent = blood;
+                        document.getElementById('display-age-val').textContent = age;
+                        document.getElementById('display-phone-val').textContent = phone;
+                        document.getElementById('display-location-val').textContent = city;
+                        
+                        const statusVal = document.getElementById('display-status-val');
+                        statusVal.textContent = status;
+                        if (status === 'Active') {
+                            statusVal.className = 'status-active';
+                        } else {
+                            statusVal.className = 'status-inactive';
+                        }
+
+                        // Switch back to view mode and show success toast
+                        editForm.style.display = 'none';
+                        viewSec.style.display = 'block';
+
+                        // Show success message temporarily (can use alert or customize it)
+                        alert('Profile saved successfully!');
+                    } else {
+                        document.getElementById('profile-error-msg').style.display = 'block';
+                        document.getElementById('profile-success-msg').style.display = 'none';
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('profile-error-msg').style.display = 'block';
+                    document.getElementById('profile-success-msg').style.display = 'none';
+                });
+        });
+    </script>
+</body>
+</html>
