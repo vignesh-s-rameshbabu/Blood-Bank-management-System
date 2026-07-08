@@ -1,5 +1,6 @@
 com\lifeflow\WebServer$DeleteRequestHandler.class
 com\lifeflow\NotificationService.class
+com\lifeflow\WebServer$ExceptionHandlingFilter.class
 com\lifeflow\WebServer$AcceptRequestHandler.class
 com\lifeflow\SessionManager.class
 com\lifeflow\WebServer$EmergencyMatchHandler.class

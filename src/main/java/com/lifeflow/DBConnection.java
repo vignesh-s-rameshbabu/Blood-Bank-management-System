@@ -17,6 +17,14 @@ public class DBConnection {
     private static final String SERVER_URL = "jdbc:mysql://127.0.0.1:3306/";
     private static HikariDataSource dataSource;
     private static java.util.Properties dbProps = new java.util.Properties();
+
+    private static String getEnvOrProp(String envKey, String propKey, String defaultValue) {
+        String envValue = System.getenv(envKey);
+        if (envValue != null && !envValue.isEmpty()) {
+            return envValue;
+        }
+        return dbProps.getProperty(propKey, defaultValue);
+    }
     
     static {
         try (java.io.InputStream input = DBConnection.class.getClassLoader().getResourceAsStream("application.properties")) {
@@ -31,9 +39,9 @@ public class DBConnection {
 
         try {
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(dbProps.getProperty("db.url", "jdbc:mysql://127.0.0.1:3306/lifeflow"));
-            config.setUsername(dbProps.getProperty("db.user", "root"));
-            config.setPassword(dbProps.getProperty("db.password", "root"));
+            config.setJdbcUrl(getEnvOrProp("DB_URL", "db.url", "jdbc:mysql://127.0.0.1:3306/lifeflow"));
+            config.setUsername(getEnvOrProp("DB_USER", "db.user", "root"));
+            config.setPassword(getEnvOrProp("DB_PASSWORD", "db.password", "root"));
             config.setMaximumPoolSize(10);
             config.setMinimumIdle(2);
             config.setConnectionTimeout(30000);
@@ -151,6 +159,10 @@ public class DBConnection {
 
     private static Connection getServerConnection() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
+        String envUrl = System.getenv("DB_URL");
+        if (envUrl != null && !envUrl.isEmpty()) {
+            return DriverManager.getConnection(envUrl, System.getenv("DB_USER"), System.getenv("DB_PASSWORD"));
+        }
         try {
             return DriverManager.getConnection(SERVER_URL, "root", "");
         } catch (Exception e) {

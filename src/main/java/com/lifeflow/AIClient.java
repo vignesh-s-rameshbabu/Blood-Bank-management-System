@@ -19,7 +19,13 @@ public class AIClient {
 
     private static final Logger logger = LoggerFactory.getLogger(AIClient.class);
 
-    private static final String BASE_URL = "http://localhost:8000/ai";
+    private static String BASE_URL = "http://localhost:8000/ai";
+    static {
+        String envUrl = System.getenv("AI_SERVICE_URL");
+        if (envUrl != null && !envUrl.isEmpty()) {
+            BASE_URL = envUrl;
+        }
+    }
     private static final HttpClient client = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .connectTimeout(Duration.ofSeconds(10))

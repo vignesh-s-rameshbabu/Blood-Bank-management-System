@@ -14,7 +14,16 @@ public class Main {
         }
 
         if (args.length > 0 && "web".equalsIgnoreCase(args[0])) {
-            WebServer.start(8080);
+            int port = 8080;
+            String envPort = System.getenv("PORT");
+            if (envPort != null && !envPort.isEmpty()) {
+                try {
+                    port = Integer.parseInt(envPort);
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid PORT environment variable, defaulting to 8080");
+                }
+            }
+            WebServer.start(port);
             return;
         }
 

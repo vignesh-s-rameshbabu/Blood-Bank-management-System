@@ -16,6 +16,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.net.httpserver.Filter;
+import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -45,37 +47,70 @@ public class WebServer {
     public static void start(int port) {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-            server.createContext("/", new StaticFileHandler());
+            registerContext(server, "/", new StaticFileHandler());
             
             // Unprotected endpoints
-            server.createContext("/auth/google", new GoogleOAuthHandler.LoginRedirectHandler());
-            server.createContext("/auth/google/callback", new GoogleOAuthHandler.CallbackHandler());
-            server.createContext("/logout", new LogoutHandler());
-            server.createContext("/api/me", new ApiMeHandler()).getFilters().add(new AuthFilter());
-            server.createContext("/api/setup-role", new RoleSetupHandler()).getFilters().add(new AuthFilter());
+            registerContext(server, "/auth/google", new GoogleOAuthHandler.LoginRedirectHandler());
+            registerContext(server, "/auth/google/callback", new GoogleOAuthHandler.CallbackHandler());
+            registerContext(server, "/logout", new LogoutHandler());
+            registerContext(server, "/api/me", new ApiMeHandler()).getFilters().add(new AuthFilter());
+            registerContext(server, "/api/setup-role", new RoleSetupHandler()).getFilters().add(new AuthFilter());
 
             // Protect dashboards & actions
-            server.createContext("/patient_dashboard.html", new ProtectedFileHandler("/patient_dashboard.html")).getFilters().add(new AuthFilter());
-            server.createContext("/donor_dashboard.html", new ProtectedFileHandler("/donor_dashboard.html")).getFilters().add(new AuthFilter());
-            server.createContext("/setup-role.html", new ProtectedFileHandler("/setup-role.html")).getFilters().add(new AuthFilter());
-            server.createContext("/admin.html", new ProtectedFileHandler("/admin.html")).getFilters().add(new AuthFilter());
-            server.createContext("/patient-register", new PatientRegisterHandler()).getFilters().add(new AuthFilter());
+            registerContext(server, "/patient_dashboard.html", new ProtectedFileHandler("/patient_dashboard.html")).getFilters().add(new AuthFilter());
+            registerContext(server, "/donor_dashboard.html", new ProtectedFileHandler("/donor_dashboard.html")).getFilters().add(new AuthFilter());
+            registerContext(server, "/setup-role.html", new ProtectedFileHandler("/setup-role.html")).getFilters().add(new AuthFilter());
+            registerContext(server, "/admin.html", new ProtectedFileHandler("/admin.html")).getFilters().add(new AuthFilter());
+            registerContext(server, "/patient-register", new PatientRegisterHandler()).getFilters().add(new AuthFilter());
 
-            server.createContext("/donor-login", new DonorLoginHandler());
-            server.createContext("/donor-register", new DonorRegisterHandler());
-            server.createContext("/accept-request", new AcceptRequestHandler()).getFilters().add(new RateLimitFilter());
-            server.createContext("/complete-donation", new CompleteDonationHandler());
-            server.createContext("/update-donor", new UpdateDonorHandler());
-            server.createContext("/delete-user", new DeleteUserHandler());
-            server.createContext("/delete-request", new DeleteRequestHandler());
-            server.createContext("/api/emergency-match", new EmergencyMatchHandler()).getFilters().add(new AuthFilter());
-            server.createContext("/api/donor-action", new DonorActionHandler());
-            server.createContext("/api/live-status", new LiveStatusHandler());
+            registerContext(server, "/donor-login", new DonorLoginHandler());
+            registerContext(server, "/donor-register", new DonorRegisterHandler());
+            registerContext(server, "/accept-request", new AcceptRequestHandler()).getFilters().add(new RateLimitFilter());
+            registerContext(server, "/complete-donation", new CompleteDonationHandler());
+            registerContext(server, "/update-donor", new UpdateDonorHandler());
+            registerContext(server, "/delete-user", new DeleteUserHandler());
+            registerContext(server, "/delete-request", new DeleteRequestHandler());
+            registerContext(server, "/api/emergency-match", new EmergencyMatchHandler()).getFilters().add(new AuthFilter());
+            registerContext(server, "/api/donor-action", new DonorActionHandler());
+            registerContext(server, "/api/live-status", new LiveStatusHandler());
             server.setExecutor(null); 
             server.start();
             logger.info("[LifeFlow] Web server successfully started at http://localhost:" + port);
         } catch (IOException e) {
             logger.error("[LifeFlow] Failed to start web server: " + e.getMessage());
+        }
+    }
+
+    private static HttpContext registerContext(HttpServer server, String path, HttpHandler handler) {
+        HttpContext context = server.createContext(path, handler);
+        context.getFilters().add(new ExceptionHandlingFilter());
+        return context;
+    }
+
+    static class ExceptionHandlingFilter extends Filter {
+        @Override
+        public String description() {
+            return "Global Exception Handler";
+        }
+
+        @Override
+        public void doFilter(HttpExchange exchange, Chain chain) throws IOException {
+            try {
+                chain.doFilter(exchange);
+            } catch (Throwable t) {
+                logger.error("Unhandled exception processing request: " + exchange.getRequestURI(), t);
+                try {
+                    String html = "<!DOCTYPE html><html><head><title>System Error</title><style>body { font-family: sans-serif; text-align: center; padding: 50px; background: #f8fafc; color: #1e293b; } h1 { color: #ef4444; } .btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #3b82f6; color: white; text-decoration: none; border-radius: 5px; }</style></head><body><h1>Oops! Something went wrong.</h1><p>Our team has been notified and is working on it.</p><a href='/' class='btn'>Return Home</a></body></html>";
+                    byte[] bytes = html.getBytes(StandardCharsets.UTF_8);
+                    exchange.getResponseHeaders().set("Content-Type", "text/html; charset=utf-8");
+                    exchange.sendResponseHeaders(500, bytes.length);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(bytes);
+                    }
+                } catch (Exception e) {
+                    logger.error("Failed to send error page", e);
+                }
+            }
         }
     }
 

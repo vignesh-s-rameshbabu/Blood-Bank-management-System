@@ -28,28 +28,58 @@ public class EmailUtility {
         }
     }
 
+    private static Properties getMailProperties() {
+        Properties props = new Properties();
+        String host = System.getenv("SMTP_HOST");
+        props.put("mail.smtp.host", host != null ? host : mailProps.getProperty("mail.smtp.host", "smtp.gmail.com"));
+        
+        String port = System.getenv("SMTP_PORT");
+        props.put("mail.smtp.port", port != null ? port : mailProps.getProperty("mail.smtp.port", "587"));
+        
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        return props;
+    }
+
+    private static String getSmtpUser() {
+        String user = System.getenv("SMTP_USER");
+        return user != null ? user : mailProps.getProperty("mail.user", "");
+    }
+
+    private static String getSmtpPassword() {
+        String pwd = System.getenv("SMTP_PASSWORD");
+        return pwd != null ? pwd : mailProps.getProperty("mail.password", "");
+    }
+    
+    public static String getSmtpFrom() {
+        String from = System.getenv("SMTP_FROM");
+        return from != null ? from : mailProps.getProperty("mail.from", "system@lifeflow.com");
+    }
+
     private static Session getSession() {
-        return Session.getInstance(mailProps, new Authenticator() {
+        return Session.getInstance(getMailProperties(), new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(
-                        mailProps.getProperty("mail.user"), 
-                        mailProps.getProperty("mail.password")
-                );
+                return new PasswordAuthentication(getSmtpUser(), getSmtpPassword());
             }
         });
+    }
+
+    public static String getAppUrl() {
+        String appUrl = System.getenv("APP_URL");
+        return appUrl != null && !appUrl.isEmpty() ? appUrl : "http://localhost:8080";
     }
 
     public static void sendEmailToDonor(int requestId, int donorId, String donorEmail, String donorName, String requestedGroup, String patientLocation, int distance, int eta, int score) {
         try {
             Session session = getSession();
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(mailProps.getProperty("mail.from")));
+            message.setFrom(new InternetAddress(getSmtpFrom()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(donorEmail));
             message.setSubject("URGENT: Emergency Blood Request - " + requestedGroup + " Match Found");
 
-            String acceptLink = "http://localhost:8080/api/donor-action?requestId=" + requestId + "&donorId=" + donorId + "&action=ACCEPT";
-            String rejectLink = "http://localhost:8080/api/donor-action?requestId=" + requestId + "&donorId=" + donorId + "&action=REJECT";
+            String acceptLink = getAppUrl() + "/api/donor-action?requestId=" + requestId + "&donorId=" + donorId + "&action=ACCEPT";
+            String rejectLink = getAppUrl() + "/api/donor-action?requestId=" + requestId + "&donorId=" + donorId + "&action=REJECT";
 
             String htmlContent = "<html><body style='font-family:\"Inter\", Arial, sans-serif; background-color:#f8fafc; padding:40px; color:#1e293b; margin:0;'>" +
                     "<div style='background:white; border-radius:12px; padding:32px; max-width:600px; margin:auto; box-shadow:0 10px 25px rgba(0,0,0,0.05);'>" +
@@ -97,7 +127,7 @@ public class EmailUtility {
         try {
             Session session = getSession();
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(mailProps.getProperty("mail.from")));
+            message.setFrom(new InternetAddress(getSmtpFrom()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(patientEmail));
             message.setSubject("Blood Request Update - AI Matching Digest");
 
@@ -139,7 +169,7 @@ public class EmailUtility {
             
             htmlBuilder.append("</table></div>")
                        .append("<p style='margin-top:20px; font-size:15px;'>We have automatically dispatched emergency alerts to these donors. You will receive a final confirmation email with their contact details as soon as one accepts the request.</p>")
-                       .append("<p style='font-size:15px;'>You can monitor live updates on your <a href='http://localhost:8080/patient_dashboard.html' style='color:#3b82f6; font-weight:600;'>Patient Dashboard</a>.</p>")
+                       .append("<p style='font-size:15px;'>You can monitor live updates on your <a href='").append(getAppUrl()).append("/patient_dashboard.html' style='color:#3b82f6; font-weight:600;'>Patient Dashboard</a>.</p>")
                        .append("<div style='text-align:center; padding-top:24px; border-top:1px solid #e2e8f0; font-size:13px; color:#94a3b8; margin-top:32px;'>")
                        .append("<p>LifeFlow Automated AI System</p>")
                        .append("</div></div></body></html>");
@@ -159,7 +189,7 @@ public class EmailUtility {
         try {
             Session session = getSession();
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(mailProps.getProperty("mail.from")));
+            message.setFrom(new InternetAddress(getSmtpFrom()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(patientEmail));
             message.setSubject("CONFIRMED: Donor Secured for Blood Request - Tracking ID: " + trackingId);
 
@@ -203,7 +233,7 @@ public class EmailUtility {
         try {
             Session session = getSession();
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(mailProps.getProperty("mail.from")));
+            message.setFrom(new InternetAddress(getSmtpFrom()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(donorEmail));
             message.setSubject("DISPATCH CONFIRMED: Proceed to " + hospital);
 

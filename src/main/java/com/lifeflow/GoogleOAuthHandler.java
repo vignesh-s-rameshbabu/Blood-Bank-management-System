@@ -31,22 +31,28 @@ public class GoogleOAuthHandler {
     private static final java.util.Properties oauthProps = new java.util.Properties();
     private static String CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"; 
     private static String CLIENT_SECRET = "YOUR_GOOGLE_CLIENT_SECRET";
+    private static String REDIRECT_URI = "http://localhost:8080/auth/google/callback";
     
     static {
         try (java.io.InputStream input = GoogleOAuthHandler.class.getClassLoader().getResourceAsStream("application.properties")) {
             if (input != null) {
                 oauthProps.load(input);
-                CLIENT_ID = oauthProps.getProperty("google.client.id", CLIENT_ID);
-                CLIENT_SECRET = oauthProps.getProperty("google.client.secret", CLIENT_SECRET);
             } else {
                 logger.warn("application.properties not found for Google OAuth");
             }
         } catch (Exception ex) {
             logger.error("Error loading Google OAuth properties", ex);
         }
+        
+        String envClientId = System.getenv("GOOGLE_CLIENT_ID");
+        CLIENT_ID = envClientId != null ? envClientId : oauthProps.getProperty("google.client.id", CLIENT_ID);
+        
+        String envClientSecret = System.getenv("GOOGLE_CLIENT_SECRET");
+        CLIENT_SECRET = envClientSecret != null ? envClientSecret : oauthProps.getProperty("google.client.secret", CLIENT_SECRET);
+        
+        String envRedirectUri = System.getenv("GOOGLE_REDIRECT_URI");
+        REDIRECT_URI = envRedirectUri != null ? envRedirectUri : oauthProps.getProperty("google.redirect.uri", REDIRECT_URI);
     }
-
-    private static final String REDIRECT_URI = "http://localhost:8080/auth/google/callback";
 
     public static class LoginRedirectHandler implements HttpHandler {
         @Override

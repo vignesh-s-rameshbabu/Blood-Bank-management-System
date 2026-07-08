@@ -31,7 +31,8 @@ public class DonorService {
             PreparedStatement userStmt = conn.prepareStatement(userSql, Statement.RETURN_GENERATED_KEYS);
             userStmt.setString(1, name);
             userStmt.setString(2, email);
-            userStmt.setString(3, password);
+            String hashedPw = org.mindrot.jbcrypt.BCrypt.hashpw(password, org.mindrot.jbcrypt.BCrypt.gensalt());
+            userStmt.setString(3, hashedPw);
             userStmt.setString(4, phone);
             userStmt.executeUpdate();
 
