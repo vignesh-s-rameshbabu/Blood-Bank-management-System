@@ -63,7 +63,7 @@ public class WebServer {
             registerContext(server, "/admin.html", new ProtectedFileHandler("/admin.html")).getFilters().add(new AuthFilter());
             registerContext(server, "/patient-register", new PatientRegisterHandler()).getFilters().add(new AuthFilter());
 
-            registerContext(server, "/donor-login", new DonorLoginHandler());
+            registerContext(server, "/login", new LoginHandler());
             registerContext(server, "/donor-register", new DonorRegisterHandler());
             registerContext(server, "/accept-request", new AcceptRequestHandler()).getFilters().add(new RateLimitFilter());
             registerContext(server, "/complete-donation", new CompleteDonationHandler());
@@ -216,7 +216,7 @@ public class WebServer {
         }
     }
 
-    static class DonorLoginHandler implements HttpHandler {
+    static class LoginHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
@@ -225,27 +225,41 @@ public class WebServer {
             String password = params.get("password");
 
             if (email == null || password == null) {
-                redirect(exchange, "/donor_login.html?error=invalid");
+                redirect(exchange, "/login.html?error=invalid");
                 return;
             }
 
             try (Connection conn = DBConnection.getConnection()) {
                 PreparedStatement stmt = conn.prepareStatement(
-                        "SELECT u.name, u.password FROM users u JOIN donors d ON u.id = d.user_id WHERE u.email = ?");
+                        "SELECT id, role, password FROM users WHERE email = ?");
                 stmt.setString(1, email.trim());
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     String hashedPw = rs.getString("password");
                     if (hashedPw != null && org.mindrot.jbcrypt.BCrypt.checkpw(password.trim(), hashedPw)) {
-                        redirect(exchange, "/donor_dashboard.html?email=" + email.trim());
+                        int userId = rs.getInt("id");
+                        String role = rs.getString("role");
+                        
+                        String sessionId = SessionManager.createSession(userId);
+                        SessionManager.setSessionCookie(exchange, sessionId);
+                        
+                        String redirectUrl = "/patient_dashboard.html";
+                        if (role == null || role.trim().isEmpty()) {
+                            redirectUrl = "/setup-role.html";
+                        } else if ("ADMIN".equalsIgnoreCase(role)) {
+                            redirectUrl = "/admin.html";
+                        } else if ("DONOR".equalsIgnoreCase(role)) {
+                            redirectUrl = "/donor_dashboard.html";
+                        }
+                        redirect(exchange, redirectUrl);
                     } else {
-                        redirect(exchange, "/donor_login.html?error=invalid");
+                        redirect(exchange, "/login.html?error=invalid");
                     }
                 } else {
-                    redirect(exchange, "/donor_login.html?error=invalid");
+                    redirect(exchange, "/login.html?error=invalid");
                 }
             } catch (Exception e) {
-                redirect(exchange, "/donor_login.html?error=invalid");
+                redirect(exchange, "/login.html?error=invalid");
             }
         }
     }
