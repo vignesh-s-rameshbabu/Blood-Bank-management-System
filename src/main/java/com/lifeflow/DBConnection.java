@@ -14,12 +14,15 @@ public class DBConnection {
 
     private static final Logger logger = LoggerFactory.getLogger(DBConnection.class);
 
-    private static final String SERVER_URL = "jdbc:mysql://127.0.0.1:3306/";
     private static HikariDataSource dataSource;
     private static java.util.Properties dbProps = new java.util.Properties();
 
-    private static String getEnvOrProp(String envKey, String propKey, String defaultValue) {
-        String envValue = System.getenv(envKey);
+    private static String getEnvOrProp(String primaryEnv, String fallbackEnv, String propKey, String defaultValue) {
+        String envValue = System.getenv(primaryEnv);
+        if (envValue != null && !envValue.isEmpty()) {
+            return envValue;
+        }
+        envValue = System.getenv(fallbackEnv);
         if (envValue != null && !envValue.isEmpty()) {
             return envValue;
         }
@@ -39,9 +42,9 @@ public class DBConnection {
 
         try {
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(getEnvOrProp("DB_URL", "db.url", "jdbc:mysql://127.0.0.1:3306/lifeflow"));
-            config.setUsername(getEnvOrProp("DB_USER", "db.user", "root"));
-            config.setPassword(getEnvOrProp("DB_PASSWORD", "db.password", "root"));
+            config.setJdbcUrl(getEnvOrProp("MYSQL_URL", "DB_URL", "db.url", "jdbc:mysql://127.0.0.1:3306/lifeflow"));
+            config.setUsername(getEnvOrProp("MYSQLUSER", "DB_USER", "db.user", "root"));
+            config.setPassword(getEnvOrProp("MYSQLPASSWORD", "DB_PASSWORD", "db.password", "root"));
             config.setMaximumPoolSize(10);
             config.setMinimumIdle(2);
             config.setConnectionTimeout(30000);
@@ -59,10 +62,7 @@ public class DBConnection {
     }
 
     public static void initializeDatabase() throws Exception {
-        try (Connection conn = getServerConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS lifeflow");
-        }
+        // Railway already creates the database, so we skip CREATE DATABASE.
 
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
@@ -154,19 +154,6 @@ public class DBConnection {
                     "subject VARCHAR(200)," +
                     "template_type VARCHAR(50)," +
                     "sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
-        }
-    }
-
-    private static Connection getServerConnection() throws Exception {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        String envUrl = System.getenv("DB_URL");
-        if (envUrl != null && !envUrl.isEmpty()) {
-            return DriverManager.getConnection(envUrl, System.getenv("DB_USER"), System.getenv("DB_PASSWORD"));
-        }
-        try {
-            return DriverManager.getConnection(SERVER_URL, "root", "");
-        } catch (Exception e) {
-            return DriverManager.getConnection(SERVER_URL, "root", "root");
         }
     }
 }
