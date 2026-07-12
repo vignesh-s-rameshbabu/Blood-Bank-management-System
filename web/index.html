@@ -271,6 +271,11 @@
 
         // Authentication UI Update Logic
         document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('error') === 'auth_failed') {
+                alert('Google Authentication failed. Please check your OAuth credentials or try again later.');
+            }
+
             fetch('/api/me', { credentials: 'include' })
                 .then(res => {
                     const contentType = res.headers.get("content-type");

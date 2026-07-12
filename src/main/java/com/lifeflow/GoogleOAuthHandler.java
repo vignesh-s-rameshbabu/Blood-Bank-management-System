@@ -54,12 +54,22 @@ public class GoogleOAuthHandler {
         REDIRECT_URI = envRedirectUri != null ? envRedirectUri : oauthProps.getProperty("google.redirect.uri", REDIRECT_URI);
     }
 
+    private static String getDynamicRedirectUri(HttpExchange exchange) {
+        String host = exchange.getRequestHeaders().getFirst("Host");
+        String scheme = exchange.getRequestHeaders().getFirst("X-Forwarded-Proto");
+        if (scheme == null) {
+            scheme = "http";
+        }
+        return scheme + "://" + host + "/auth/google/callback";
+    }
+
     public static class LoginRedirectHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws java.io.IOException {
+            String dynamicRedirectUri = getDynamicRedirectUri(exchange);
             String oauthUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
                     "?client_id=" + CLIENT_ID +
-                    "&redirect_uri=" + URLEncoder.encode(REDIRECT_URI, "UTF-8") +
+                    "&redirect_uri=" + URLEncoder.encode(dynamicRedirectUri, "UTF-8") +
                     "&response_type=code" +
                     "&scope=" + URLEncoder.encode("openid email profile", "UTF-8") +
                     "&access_type=online" +
@@ -91,11 +101,12 @@ public class GoogleOAuthHandler {
             try {
                 // 1. Exchange code for access token
                 String tokenEndpoint = "https://oauth2.googleapis.com/token";
+                String dynamicRedirectUri = getDynamicRedirectUri(exchange);
                 String postData = "client_id=" + CLIENT_ID +
                         "&client_secret=" + CLIENT_SECRET +
                         "&code=" + code +
                         "&grant_type=authorization_code" +
-                        "&redirect_uri=" + URLEncoder.encode(REDIRECT_URI, "UTF-8");
+                        "&redirect_uri=" + URLEncoder.encode(dynamicRedirectUri, "UTF-8");
 
                 byte[] postDataBytes = postData.getBytes(StandardCharsets.UTF_8);
 
