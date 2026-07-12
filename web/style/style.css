@@ -907,4 +907,113 @@ footer {
     transform: translateY(-3px);
 }
 
+/* Responsive Styles */
 
+/* Hamburger menu toggle class */
+.nav-links.active {
+    display: flex !important;
+}
+
+@media (max-width: 992px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 20px 60px;
+        margin-top: 0;
+    }
+    .hero-content {
+        max-width: 100%;
+        margin-bottom: 30px;
+    }
+    .hero-buttons {
+        justify-content: center;
+    }
+    .hero-stats {
+        margin: 0 auto;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .section-container, .section-container.reverse, .donate-grid, .contact-wrapper, .footer-top {
+        flex-direction: column;
+        gap: 40px;
+        text-align: center;
+    }
+    .about-image img, .donate-image img {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+    }
+    .about, .donate, .blood-types, .contact, footer {
+        padding: 60px 20px;
+    }
+    .blood-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .about-features li {
+        justify-content: center;
+    }
+    .eligibility-list li {
+        justify-content: center;
+    }
+    .donate-buttons {
+        justify-content: center;
+    }
+    .hero-image {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 14px 20px;
+        flex-wrap: wrap;
+    }
+    .nav-brand {
+        flex: 1;
+    }
+    .menu-toggle {
+        display: flex !important;
+    }
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.98);
+        padding: 20px 0;
+        gap: 15px;
+        order: 3;
+        margin-top: 10px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .nav-actions .btn-text {
+        display: none; /* Hide text, keep icon */
+    }
+    .nav-actions .btn-register {
+        padding: 8px 12px;
+    }
+    .hero-title {
+        font-size: clamp(2rem, 8vw, 2.5rem);
+    }
+    .contact-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .blood-grid {
+        grid-template-columns: 1fr;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    .hero-img-wrapper img {
+        height: auto;
+    }
+}

@@ -236,6 +236,32 @@
         #add-donor-toggle:checked ~ .admin-page #d-msg { display: block; }
         #add-patient-toggle:checked ~ .admin-page #p-msg { display: block; }
         #send-request-toggle:checked ~ .admin-page #r-msg { display: block; }
+
+        /* Responsive Styles */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            display: block;
+        }
+        @media (max-width: 768px) {
+            .admin-page {
+                padding: 20px;
+            }
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .admin-tabs {
+                flex-wrap: wrap;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .dash-card {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body class="login-body">
@@ -259,12 +285,13 @@
         </div>
         <nav class="nav-links">
             <a href="index.html" class="nav-link">Home</a>
-            <a href="index.html#about" class="nav-link">About</a>
-            <a href="index.html#blood-types" class="nav-link">Blood Types</a>
             <a href="index.html#contact" class="nav-link">Contact</a>
+            <a href="login.html" class="nav-link" style="color:#ff6b6b; font-weight:600;">Logout</a>
         </nav>
         <div class="nav-actions">
-            <a href="index.html" class="btn-login" id="btn-logout" style="display: inline-block; text-align: center;">Logout</a>
+            <div class="menu-toggle" id="mobile-menu" style="display:none; font-size: 1.8rem; cursor: pointer; color: #c0392b; align-items: center;">
+                &#9776;
+            </div>
         </div>
     </header>
 
@@ -321,7 +348,7 @@
                     <h4>&#128275; All Donors (SELECT)</h4>
                     <a href="admin.html" style="text-decoration: none;"><button class="btn-refresh">&#8635; Refresh</button></a>
                 </div>
-                <table class="history-table">
+                <div class="table-responsive"><table class="history-table">
                     <thead>
                         <tr>
                             <th>ID</th><th>Name</th><th>Email</th>
@@ -361,7 +388,7 @@
                             <td><a href="/delete-user?userId=5" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
                         </tr>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
 
@@ -397,7 +424,7 @@
                     <h4>&#128275; All Patient Requests (SELECT)</h4>
                     <a href="admin.html" style="text-decoration: none;"><button class="btn-refresh">&#8635; Refresh</button></a>
                 </div>
-                <table class="history-table">
+                <div class="table-responsive"><table class="history-table">
                     <thead>
                         <tr>
                             <th>ID</th><th>Name</th><th>Email</th>
@@ -421,7 +448,7 @@
                             <td><a href="/delete-user?userId=3" class="btn-del" style="text-decoration:none;">&#128465; Delete</a></td>
                         </tr>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
 
@@ -485,6 +512,22 @@
         </div>
 
     </div>
-
+    <script>
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (mobileMenu) {
+            mobileMenu.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+            
+            // Close menu on link click
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                });
+            });
+        }
+    </script>
 </body>
 </html>

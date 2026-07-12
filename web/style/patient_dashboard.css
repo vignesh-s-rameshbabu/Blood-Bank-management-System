@@ -657,6 +657,12 @@ body {
 /* =========================================
    Responsive Design
 ========================================= */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+}
+
 @media (max-width: 1200px) {
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -672,7 +678,15 @@ body {
         transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: none;
     }
+    .sidebar.active {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
+    }
     
+    .menu-toggle {
+        display: flex !important;
+    }
+
     .main-content { margin-left: 0; }
     
     .topbar { padding: 0 20px; }

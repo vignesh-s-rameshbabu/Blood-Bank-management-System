@@ -46,6 +46,9 @@
     <main class="main-content">
         <!-- Topbar -->
         <header class="topbar">
+            <div class="menu-toggle" id="mobile-menu" style="display:none; font-size: 1.8rem; cursor: pointer; color: #c0392b; align-items: center; margin-right: 15px;">
+                &#9776;
+            </div>
             <div class="search-bar">
                 <span class="search-icon">&#128269;</span>
                 <input type="text" placeholder="Search patients, donors...">
@@ -248,7 +251,7 @@
                 </div>
                 <div class="glass-card">
                     <div class="table-container">
-                        <table class="modern-table">
+                        <div class="table-responsive"><table class="modern-table">
                             <thead>
                                 <tr>
                                     <th>Donor Name</th>
@@ -283,7 +286,7 @@
                                     <td><span class="badge-status">Available</span></td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table></div>
                     </div>
                 </div>
             </section>

@@ -26,6 +26,9 @@
             <a href="index.html#contact" class="nav-link">Contact</a>
         </nav>
         <div class="nav-actions">
+            <div class="menu-toggle" id="mobile-menu" style="display:none; font-size: 1.8rem; cursor: pointer; color: #c0392b; align-items: center;">
+                &#9776;
+            </div>
             <a href="index.html" class="btn-login" id="btn-logout" style="display: inline-block; text-align: center;">Logout</a>
         </div>
     </header>
@@ -41,7 +44,7 @@
             <div class="dash-card">
                 <h3>&#128203; Past Donations</h3>
                 
-                <table class="history-table">
+                <div class="table-responsive"><table class="history-table">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -64,10 +67,27 @@
                             <td><span class="badge-done" style="background: rgba(39, 174, 96, 0.15); color: #2ecc71; border: 1px solid rgba(39, 174, 96, 0.3); padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">Completed</span></td>
                         </tr>
                     </tbody>
-                </table>
+                </table></div>
             </div>
         </div>
     </div>
 
+    <script>
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (mobileMenu) {
+            mobileMenu.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+            
+            // Close menu on link click
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                });
+            });
+        }
+    </script>
 </body>
 </html>

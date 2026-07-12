@@ -27,6 +27,9 @@
         </nav>
         <div class="nav-actions">
             <a href="patient_register.html" class="btn-register" id="btn-register-nav" style="display: inline-block; text-align: center;">Patient Register</a>
+            <div class="menu-toggle" id="mobile-menu" style="display:none; font-size: 1.8rem; cursor: pointer; color: #c0392b; align-items: center;">
+                &#9776;
+            </div>
         </div>
     </header>
 
@@ -119,6 +122,22 @@
             banner.textContent = 'Invalid email or password. Please try again.';
             const form = document.getElementById('login-form');
             form.parentNode.insertBefore(banner, form);
+        }
+
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (mobileMenu) {
+            mobileMenu.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+            
+            // Close menu on link click
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                });
+            });
         }
     </script>
 
