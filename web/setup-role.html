@@ -93,5 +93,18 @@
             <button type="submit" class="btn-submit">Continue to Dashboard</button>
         </form>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const roleParam = urlParams.get('role');
+            if (roleParam) {
+                const selectElement = document.querySelector('select[name="role"]');
+                if (selectElement) {
+                    // Force uppercase to match the option values (PATIENT or DONOR)
+                    selectElement.value = roleParam.toUpperCase();
+                }
+            }
+        });
+    </script>
 </body>
 </html>
