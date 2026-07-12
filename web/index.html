@@ -271,7 +271,7 @@
 
         // Authentication UI Update Logic
         document.addEventListener('DOMContentLoaded', () => {
-            fetch('/api/me')
+            fetch('/api/me', { credentials: 'include' })
                 .then(res => {
                     const contentType = res.headers.get("content-type");
                     if (res.ok && contentType && contentType.includes("application/json")) {
