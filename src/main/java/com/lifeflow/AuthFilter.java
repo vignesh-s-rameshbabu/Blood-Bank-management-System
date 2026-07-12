@@ -37,6 +37,12 @@ public class AuthFilter extends Filter {
             }
 
             if (!authorized) {
+                if (role == null || role.trim().isEmpty()) {
+                    exchange.getResponseHeaders().set("Location", "/setup-role.html");
+                    exchange.sendResponseHeaders(302, -1);
+                    exchange.close();
+                    return;
+                }
                 String response = "403 Forbidden - Insufficient role privileges";
                 exchange.sendResponseHeaders(403, response.length());
                 try (java.io.OutputStream os = exchange.getResponseBody()) {
