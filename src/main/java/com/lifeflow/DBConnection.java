@@ -42,9 +42,28 @@ public class DBConnection {
 
         try {
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(getEnvOrProp("MYSQL_URL", "DB_URL", "db.url", "jdbc:mysql://127.0.0.1:3306/lifeflow"));
-            config.setUsername(getEnvOrProp("MYSQLUSER", "DB_USER", "db.user", "root"));
-            config.setPassword(getEnvOrProp("MYSQLPASSWORD", "DB_PASSWORD", "db.password", "root"));
+            String dbUrl = getEnvOrProp("MYSQL_URL", "DB_URL", "db.url", "jdbc:mysql://127.0.0.1:3306/lifeflow");
+            String dbUser = getEnvOrProp("MYSQLUSER", "DB_USER", "db.user", "root");
+            String dbPassword = getEnvOrProp("MYSQLPASSWORD", "DB_PASSWORD", "db.password", "root");
+
+            if (dbUrl != null && dbUrl.startsWith("mysql://")) {
+                int atIndex = dbUrl.indexOf("@");
+                if (atIndex != -1) {
+                    String credentials = dbUrl.substring(8, atIndex);
+                    String[] credParts = credentials.split(":", 2);
+                    if (credParts.length == 2) {
+                        dbUser = credParts[0];
+                        dbPassword = credParts[1];
+                    }
+                    dbUrl = "jdbc:mysql://" + dbUrl.substring(atIndex + 1);
+                } else {
+                    dbUrl = "jdbc:mysql://" + dbUrl.substring(8);
+                }
+            }
+
+            config.setJdbcUrl(dbUrl);
+            config.setUsername(dbUser);
+            config.setPassword(dbPassword);
             config.setMaximumPoolSize(10);
             config.setMinimumIdle(2);
             config.setConnectionTimeout(30000);
