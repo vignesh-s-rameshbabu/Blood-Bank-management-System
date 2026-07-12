@@ -1,14 +1,14 @@
 
 package com.lifeflow;
 
-import com.zaxxer.hikari.HikariConfig;
+import java.sql.Connection;
+import java.sql.Statement;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.zaxxer.hikari.HikariDataSource;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DBConnection {
 
@@ -42,24 +42,42 @@ public class DBConnection {
 
         try {
             HikariConfig config = new HikariConfig();
-            String dbUrl = getEnvOrProp("MYSQL_URL", "DB_URL", "db.url", "jdbc:mysql://127.0.0.1:3306/lifeflow");
+            String dbUrl = getEnvOrProp("MYSQL_URL", "DB_URL", "db.url", "jdbc:mysql://mysql.railway.internal:3306/railway");
             String dbUser = getEnvOrProp("MYSQLUSER", "DB_USER", "db.user", "root");
             String dbPassword = getEnvOrProp("MYSQLPASSWORD", "DB_PASSWORD", "db.password", "root");
 
             if (dbUrl != null && dbUrl.startsWith("mysql://")) {
-                int atIndex = dbUrl.indexOf("@");
+                int atIndex = dbUrl.lastIndexOf("@");
                 if (atIndex != -1) {
                     String credentials = dbUrl.substring(8, atIndex);
-                    String[] credParts = credentials.split(":", 2);
-                    if (credParts.length == 2) {
-                        dbUser = credParts[0];
-                        dbPassword = credParts[1];
+                    // Split at the FIRST colon in the credentials part
+                    int colonIndex = credentials.indexOf(":");
+                    if (colonIndex != -1) {
+                        dbUser = credentials.substring(0, colonIndex);
+                        dbPassword = credentials.substring(colonIndex + 1);
+                    } else {
+                        dbUser = credentials;
                     }
-                    dbUrl = "jdbc:mysql://" + dbUrl.substring(atIndex + 1);
+                    
+                    String hostPortDb = dbUrl.substring(atIndex + 1);
+                    dbUrl = "jdbc:mysql://" + hostPortDb;
+                    
+                    try {
+                        String[] parts = hostPortDb.split("/");
+                        String hostPort = parts[0];
+                        String dbName = parts.length > 1 ? parts[1] : "";
+                        String[] hp = hostPort.split(":");
+                        String host = hp[0];
+                        String port = hp.length > 1 ? hp[1] : "3306";
+                        logger.info("Parsed host: " + host);
+                        logger.info("Parsed port: " + port);
+                        logger.info("Parsed database: " + dbName);
+                    } catch (Exception ignored) { }
                 } else {
                     dbUrl = "jdbc:mysql://" + dbUrl.substring(8);
                 }
             }
+            logger.info("JDBC URL (without password): " + dbUrl);
 
             config.setJdbcUrl(dbUrl);
             config.setUsername(dbUser);
