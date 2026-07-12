@@ -305,15 +305,28 @@
                                 navActions.appendChild(profileImg);
                             }
 
+                            // Determine URLs based on role
+                            let patientUrl = 'patient_dashboard.html';
+                            let donorUrl = 'donor_dashboard.html';
+
+                            if (!user.role || user.role === 'null' || user.role === '') {
+                                patientUrl = 'setup-role.html?role=PATIENT';
+                                donorUrl = 'setup-role.html?role=DONOR';
+                            } else if (user.role === 'PATIENT') {
+                                donorUrl = 'javascript:alert("You are registered as a Patient. Please use the Patient dashboard.");';
+                            } else if (user.role === 'DONOR') {
+                                patientUrl = 'javascript:alert("You are registered as a Donor. Please use the Donor dashboard.");';
+                            }
+
                             // 3. Add Patient and Donor buttons to Nav Actions
                             const patientNav = document.createElement('a');
-                            patientNav.href = 'patient_dashboard.html';
+                            patientNav.href = patientUrl;
                             patientNav.className = 'btn-register';
                             patientNav.textContent = 'Patient';
                             patientNav.style.cssText = 'margin-right: 10px; display: inline-block;';
 
                             const donorNav = document.createElement('a');
-                            donorNav.href = 'donor_dashboard.html';
+                            donorNav.href = donorUrl;
                             donorNav.className = 'btn-register';
                             donorNav.textContent = 'Donor';
                             donorNav.style.cssText = 'margin-right: 15px; display: inline-block; background: transparent; color: #c0392b; border: 2px solid #c0392b;';
@@ -326,13 +339,13 @@
                         const heroButtons = document.querySelector('.hero-buttons');
                         if (heroButtons) {
                             const patientHero = document.createElement('a');
-                            patientHero.href = 'patient_dashboard.html';
+                            patientHero.href = patientUrl;
                             patientHero.className = 'btn-primary';
                             patientHero.textContent = 'Patient';
                             patientHero.style.cssText = 'display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-right: 10px;';
 
                             const donorHero = document.createElement('a');
-                            donorHero.href = 'donor_dashboard.html';
+                            donorHero.href = donorUrl;
                             donorHero.className = 'btn-primary';
                             donorHero.textContent = 'Donor';
                             donorHero.style.cssText = 'display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: transparent; color: #c0392b; border: 2px solid #c0392b;';
@@ -345,13 +358,13 @@
                         const donateButtons = document.querySelector('.donate-buttons');
                         if (donateButtons) {
                             const patientDonate = document.createElement('a');
-                            patientDonate.href = 'patient_dashboard.html';
+                            patientDonate.href = patientUrl;
                             patientDonate.className = 'btn-primary';
                             patientDonate.textContent = 'Patient';
                             patientDonate.style.cssText = 'margin-right: 10px;';
 
                             const donorDonate = document.createElement('a');
-                            donorDonate.href = 'donor_dashboard.html';
+                            donorDonate.href = donorUrl;
                             donorDonate.className = 'btn-primary';
                             donorDonate.textContent = 'Donor';
                             donorDonate.style.cssText = 'background: transparent; color: #c0392b; border: 2px solid #c0392b;';
