@@ -72,7 +72,7 @@ public class DBConnection {
             
             dataSource = new HikariDataSource(config);
         } catch (Exception e) {
-            logger.error("Failed to initialize HikariCP connection pool: " + e.getMessage());
+            logger.error("Failed to initialize HikariCP connection pool", e);
         }
     }
 
