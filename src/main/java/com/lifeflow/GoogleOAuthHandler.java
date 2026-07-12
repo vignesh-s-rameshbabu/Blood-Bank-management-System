@@ -119,7 +119,9 @@ public class GoogleOAuthHandler {
                 }
 
                 if (conn.getResponseCode() != 200) {
-                    throw new RuntimeException("Failed to fetch token");
+                    java.util.Scanner s = new java.util.Scanner(conn.getErrorStream()).useDelimiter("\\A");
+                    String error = s.hasNext() ? s.next() : "";
+                    throw new RuntimeException("Failed to fetch token. HTTP " + conn.getResponseCode() + " Error: " + error);
                 }
 
                 JsonNode tokenResponse;
@@ -134,7 +136,9 @@ public class GoogleOAuthHandler {
                 profileConn.setRequestProperty("Authorization", "Bearer " + accessToken);
 
                 if (profileConn.getResponseCode() != 200) {
-                    throw new RuntimeException("Failed to fetch profile");
+                    java.util.Scanner s = new java.util.Scanner(profileConn.getErrorStream()).useDelimiter("\\A");
+                    String error = s.hasNext() ? s.next() : "";
+                    throw new RuntimeException("Failed to fetch profile. HTTP " + profileConn.getResponseCode() + " Error: " + error);
                 }
 
                 JsonNode profileResponse;
@@ -209,8 +213,17 @@ public class GoogleOAuthHandler {
 
             } catch (Exception e) {
                 logger.error("Exception occurred", e);
-                exchange.getResponseHeaders().set("Location", "/index.html?error=auth_failed");
-                exchange.sendResponseHeaders(302, -1);
+                String errorMessage = "Google OAuth Authentication Failed.\n\nRoot Cause:\n" + e.getMessage();
+                try {
+                    exchange.getResponseHeaders().set("Content-Type", "text/plain");
+                    byte[] bytes = errorMessage.getBytes(StandardCharsets.UTF_8);
+                    exchange.sendResponseHeaders(500, bytes.length);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(bytes);
+                    }
+                } catch (Exception ex) {
+                    // Ignore fallback errors
+                }
                 exchange.close();
             }
         }
