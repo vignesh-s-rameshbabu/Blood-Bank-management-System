@@ -373,3 +373,17 @@ header {
         grid-template-columns: 1fr;
     }
 }
+
+/* Very Small Mobile */
+@media (max-width: 480px) {
+    .search-title { font-size: 1.8rem; }
+    .search-filters { gap: 10px; }
+    .filter-btn { padding: 8px 12px; font-size: 0.9rem; }
+}
+
+/* TV / Ultra Wide */
+@media (min-width: 1440px) {
+    .search-page, .nav-links, .nav-brand { max-width: 1400px; margin-left: auto; margin-right: auto; }
+    .results-grid { grid-template-columns: repeat(4, 1fr); }
+    body { font-size: 1.1rem; }
+}

@@ -624,3 +624,15 @@ header {
     }
 }
 
+
+@media (max-width: 480px) {
+    .login-left, .login-right { padding: 30px 15px; }
+    .login-heading { font-size: 1.8rem; }
+    .form-group input, .form-group select { padding: 10px 12px; }
+}
+
+/* TV / Ultra Wide */
+@media (min-width: 1440px) {
+    .login-page, .nav-links, .nav-brand { max-width: 1400px; margin-left: auto; margin-right: auto; }
+    body { font-size: 1.1rem; }
+}

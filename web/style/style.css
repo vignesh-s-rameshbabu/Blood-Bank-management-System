@@ -1017,3 +1017,44 @@ footer {
         height: auto;
     }
 }
+
+/* Very Small Mobile */
+@media (max-width: 480px) {
+    .hero {
+        padding: 20px 10px 40px;
+    }
+    .hero-title {
+        font-size: clamp(1.8rem, 6vw, 2rem);
+    }
+    .about, .donate, .blood-types, .contact, footer {
+        padding: 40px 15px;
+    }
+    .btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+    .hero-stats {
+        gap: 15px;
+    }
+    .stat-item {
+        min-width: 120px;
+    }
+}
+
+/* Large Screens / TVs */
+@media (min-width: 1440px) {
+    .section-container, .nav-links, .nav-brand, .hero-content, .hero-image {
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .hero-title {
+        font-size: 4rem;
+    }
+    body {
+        font-size: 1.1rem;
+    }
+    .about-features li, .eligibility-list li {
+        font-size: 1.1rem;
+    }
+}
